@@ -1,0 +1,97 @@
+/* Optimizaciones de rendimiento críticas */
+.interactive-widget {
+    /* CRÍTICO: Forzar hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+
+    border: 1px solid transparent;
+    
+    /* CORREGIDO: Solo style containment para permitir overflow de indicators */
+    contain: style;
+    
+    /* Eliminar transiciones para evitar pestañeo */
+    transition: none !important;
+    
+    /* Position relative para elementos absolute */
+    position: relative;
+}
+
+/* Estado durante el arrastre - OPTIMIZADO */
+.interactive-widget.dragging {
+    /* Hardware acceleration durante drag */
+    transform: translate3d(var(--drag-x, 0), var(--drag-y, 0), 0);
+    transition: none !important;
+    z-index: 100;
+    
+    /* Containment más fuerte durante drag */
+    contain: layout style paint;
+    
+    /* Optimizar eventos durante drag */
+    pointer-events: none;
+    box-shadow: none; /* Eliminar sombra para evitar renderizado pesado */
+
+}
+
+/* Restaurar pointer-events para contenido */
+.interactive-widget.dragging .widget-content {
+    pointer-events: auto;
+}
+
+/* Hover states restaurados */
+.interactive-widget:hover:not(.dragging):not(.widget-editing) {
+  border: 1px solid #FF6010;
+  box-shadow: 0 0 5px rgba(245, 153, 66, 0.5);
+}
+
+/* Modo edición */
+.widget-editing {
+    outline: 1px dashed #FF6010 !important;
+    outline-offset: 1px;
+    z-index: 1000 !important;
+    cursor: text !important;
+    background-color: #ffffff23;
+}
+
+.widget-editing .drag-handle {
+    cursor: text !important;
+}
+
+/* Ocultar resize indicators en modo edición */
+.widget-editing .resize-indicators {
+    display: none !important;
+}
+
+.widget-selected {
+  border: 1px solid #FF6010;
+  box-shadow: 0 0 5px rgba(245, 153, 66, 0.5);
+}
+
+/* Estilos específicos para widgets de formas */
+.widget[data-type="rectangle"],
+.widget[data-type="circle"],
+.widget[data-type="diamond"] {
+    /* Asegurar que las formas se vean correctamente */
+    overflow: visible;
+    padding: 0;
+}
+
+/* Estilos para widgets de texto multilinea */
+.text-widget {
+    overflow: visible;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.text-widget-editing textarea {
+    font-family: inherit;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.text-widget-editing textarea::-webkit-scrollbar {
+    display: none; /* WebKit */
+}
