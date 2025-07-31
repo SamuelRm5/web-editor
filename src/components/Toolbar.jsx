@@ -2,6 +2,43 @@
 import React, { useMemo } from "react";
 import "./Toolbar.css";
 
+// Función para crear imagen optimizada con dimensiones reales
+const createOptimizedImage = (src, addWidget, updateWidget) => {
+  // Crear el widget inmediatamente con dimensiones por defecto
+  const widgetId = addWidget("image", { src: src });
+
+  // Luego optimizar las dimensiones en background
+  const img = new Image();
+  img.onload = () => {
+    // Calcular dimensiones optimizadas
+    const maxWidth = 400;
+    const maxHeight = 300;
+
+    let { width, height } = img;
+
+    // Si la imagen es muy grande, escalarla manteniendo proporciones
+    if (width > maxWidth || height > maxHeight) {
+      const scaleWidth = maxWidth / width;
+      const scaleHeight = maxHeight / height;
+      const scale = Math.min(scaleWidth, scaleHeight);
+
+      width = Math.round(width * scale);
+      height = Math.round(height * scale);
+
+      // Actualizar las dimensiones del widget ya creado
+      updateWidget(widgetId, { width, height });
+    }
+  };
+
+  img.onerror = () => {
+    console.warn("Error loading image for size calculation:", src);
+  };
+
+  img.src = src;
+
+  return widgetId;
+};
+
 const Toolbar = ({
   addWidget,
   onClearAll,
@@ -80,6 +117,48 @@ const Toolbar = ({
           >
             <span className="btn-icon">🔄</span>
             <span className="btn-label">Limpiar</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="toolbar-section images">
+        <h3 className="toolbar-title">Imágenes</h3>
+        <div className="toolbar-group">
+          <button
+            className="toolbar-btn primary"
+            onClick={() =>
+              createOptimizedImage(
+                "https://picsum.photos/300/200?random=1",
+                addWidget,
+                updateWidget
+              )
+            }
+          >
+            Imagen 1
+          </button>
+          <button
+            className="toolbar-btn primary"
+            onClick={() =>
+              createOptimizedImage(
+                "https://picsum.photos/300/200?random=2",
+                addWidget,
+                updateWidget
+              )
+            }
+          >
+            Imagen 2
+          </button>
+          <button
+            className="toolbar-btn primary"
+            onClick={() =>
+              createOptimizedImage(
+                "https://images.unsplash.com/photo-1500817487388-039e623edc21?q=80&w=689&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                addWidget,
+                updateWidget
+              )
+            }
+          >
+            Imagen 3
           </button>
         </div>
       </div>

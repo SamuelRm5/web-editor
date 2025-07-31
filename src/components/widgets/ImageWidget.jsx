@@ -11,7 +11,7 @@ const ImageWidget = ({ widget }) => {
   };
 
   const handleImageError = (e) => {
-    console.error("Error loading image:", widget.content, e);
+    console.error("Error loading image:", widget.src, e);
     setImageLoading(false);
     setImageError(true);
   };
@@ -21,7 +21,7 @@ const ImageWidget = ({ widget }) => {
       <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
         <div className="text-center">
           <div>❌ Error cargando imagen</div>
-          <div className="text-xs mt-1 break-all px-2">{widget.content}</div>
+          <div className="text-xs mt-1 break-all px-2">{widget.src}</div>
         </div>
       </div>
     );
@@ -31,16 +31,20 @@ const ImageWidget = ({ widget }) => {
     <div className="w-full h-full relative">
       {imageLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-          <div className="text-gray-500">Cargando...</div>
+          <div className="text-gray-500 animate-spin">🔄</div>
         </div>
       )}
       <img
-        src={widget.content}
+        src={widget.src}
         alt="Image Widget"
-        className="w-full h-full object-cover"
+        className="w-full h-full"
+        style={{
+          objectFit: "cover", // Usar cover para llenar el contenedor sin espacios
+          objectPosition: "center",
+          display: imageLoading ? "none" : "block",
+        }}
         onLoad={handleImageLoad}
         onError={handleImageError}
-        style={{ display: imageLoading ? "none" : "block" }}
       />
     </div>
   );

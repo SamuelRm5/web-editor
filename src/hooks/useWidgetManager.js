@@ -10,6 +10,7 @@ export const useWidgetManager = () => {
   const addWidget = useCallback((type, overrides = {}) => {
     const newWidget = createWidget(type, overrides);
     setWidgets((prev) => [...prev, newWidget]);
+    setSelectedId(newWidget.id); // Seleccionar el nuevo widget automáticamente
     return newWidget.id;
   }, []);
 

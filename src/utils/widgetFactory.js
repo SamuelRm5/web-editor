@@ -24,11 +24,11 @@ const WIDGET_DEFAULTS = {
   },
   image: {
     ...SETTINGS_DEFAULTS,
-    content: "https://picsum.photos/300/200?random=1",
+    src: "https://picsum.photos/300/200?random=1", // Usar src en lugar de content
     x: 150,
     y: 150,
-    width: 300,
-    height: 200,
+    width: 250, // Tamaño más pequeño por defecto
+    height: 180, // Proporción más razonable
     bounds: false, // Las imágenes pueden salir del canvas y ser eliminadas
   },
   rectangle: {
@@ -60,6 +60,34 @@ const WIDGET_DEFAULTS = {
   },
 };
 
+// Función para calcular dimensiones optimizadas de imagen
+const calculateImageDimensions = (
+  naturalWidth,
+  naturalHeight,
+  maxWidth = 400,
+  maxHeight = 300
+) => {
+  if (!naturalWidth || !naturalHeight) {
+    // Fallback si no tenemos dimensiones
+    return { width: 300, height: 200 };
+  }
+
+  // Si la imagen es más pequeña que el máximo, usar su tamaño natural
+  if (naturalWidth <= maxWidth && naturalHeight <= maxHeight) {
+    return { width: naturalWidth, height: naturalHeight };
+  }
+
+  // Calcular el factor de escala basado en el límite que se alcance primero
+  const scaleWidth = maxWidth / naturalWidth;
+  const scaleHeight = maxHeight / naturalHeight;
+  const scale = Math.min(scaleWidth, scaleHeight);
+
+  return {
+    width: Math.round(naturalWidth * scale),
+    height: Math.round(naturalHeight * scale),
+  };
+};
+
 // Función para generar posiciones aleatorias para evitar superposición
 const getRandomOffset = () => Math.floor(Math.random() * 100);
 
@@ -77,10 +105,39 @@ export const createWidget = (type, overrides = {}) => {
     y: defaults.y + getRandomOffset(),
   };
 
+  // Para imágenes, usar la URL como src si se proporciona
+  if (type === "image" && overrides.src) {
+    return {
+      id: uuidv4(),
+      type,
+      ...randomizedDefaults,
+      src: overrides.src, // Asegurar que src esté presente
+      ...overrides, // Los overrides tienen la mayor prioridad
+    };
+  }
+
   return {
     id: uuidv4(),
     type,
     ...randomizedDefaults,
     ...overrides, // Los overrides tienen la mayor prioridad
   };
+};
+
+// Función especializada para crear widgets de imagen con dimensiones optimizadas
+export const createImageWidget = (src, imageElement = null, overrides = {}) => {
+  let dimensions = { width: 300, height: 200 }; // Fallback
+
+  if (imageElement && imageElement.naturalWidth && imageElement.naturalHeight) {
+    dimensions = calculateImageDimensions(
+      imageElement.naturalWidth,
+      imageElement.naturalHeight
+    );
+  }
+
+  return createWidget("image", {
+    src,
+    ...dimensions,
+    ...overrides,
+  });
 };
