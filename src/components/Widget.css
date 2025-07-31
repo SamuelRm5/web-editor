@@ -15,14 +15,19 @@
     
     /* Position relative para elementos absolute */
     position: relative;
+    
+    /* Transform origin centrado para rotaciones */
+    transform-origin: center center;
+    
+    /* CSS custom property para rotación */
+    --widget-rotation: 0deg;
 }
 
 /* Estado durante el arrastre - OPTIMIZADO */
 .interactive-widget.dragging {
-    /* Hardware acceleration durante drag */
-    transform: translate3d(var(--drag-x, 0), var(--drag-y, 0), 0);
+    /* Hardware acceleration durante drag manteniendo rotación */
+    transform: translate3d(var(--drag-x, 0), var(--drag-y, 0), 0) rotate(var(--widget-rotation));
     transition: none !important;
-    z-index: 100;
     
     /* Containment más fuerte durante drag */
     contain: layout style paint;
@@ -30,7 +35,6 @@
     /* Optimizar eventos durante drag */
     pointer-events: none;
     box-shadow: none; /* Eliminar sombra para evitar renderizado pesado */
-
 }
 
 /* Restaurar pointer-events para contenido */
@@ -41,7 +45,6 @@
 /* Hover states restaurados */
 .interactive-widget:hover:not(.dragging):not(.widget-editing) {
   border: 1px solid #FF6010;
-  box-shadow: 0 0 5px rgba(245, 153, 66, 0.5);
 }
 
 /* Modo edición */
@@ -57,14 +60,13 @@
     cursor: text !important;
 }
 
-/* Ocultar resize indicators en modo edición */
-.widget-editing .resize-indicators {
+/* Ocultar elementos en modo edición */
+.widget-editing .resize-handle {
     display: none !important;
 }
 
 .widget-selected {
   border: 1px solid #FF6010;
-  box-shadow: 0 0 5px rgba(245, 153, 66, 0.5);
 }
 
 /* Estilos específicos para widgets de formas */

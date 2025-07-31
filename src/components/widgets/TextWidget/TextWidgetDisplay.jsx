@@ -3,7 +3,7 @@ import React from "react";
 
 const TextWidgetDisplay = ({ widget }) => {
   return (
-    <div className="text-widget-display w-full h-full flex items-start p-2">
+    <div className="text-widget-display w-full h-full flex items-start">
       <div
         className="text-gray-800 select-none w-full"
         style={{
@@ -14,7 +14,8 @@ const TextWidgetDisplay = ({ widget }) => {
           lineHeight: "1.4",
           wordBreak: "break-word",
           overflow: "hidden",
-          textOverflow: "ellipsis",
+          padding: "8px",
+          margin: 0,
           // Propiedades de formato
           fontWeight: widget.bold ? "bold" : "normal",
           fontStyle: widget.italic ? "italic" : "normal",

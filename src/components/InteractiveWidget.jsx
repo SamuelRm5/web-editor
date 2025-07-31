@@ -1,9 +1,7 @@
 // src/components/InteractiveWidget.jsx
-import React, { memo, useMemo, useCallback, useRef } from "react";
-import { Rnd } from "react-rnd";
+import React, { memo, useMemo, useCallback } from "react";
+import { MyRnd } from "./myrnd";
 import { getResizeConfig, getLockAspectRatio } from "../utils/widgetUtils";
-import { useWidgetInteractions } from "../hooks/useWidgetInteractions";
-import ResizeIndicators from "./ResizeIndicators";
 import Widget from "./Widget";
 
 const InteractiveWidget = memo(
@@ -12,124 +10,133 @@ const InteractiveWidget = memo(
     onUpdateWidget,
     onSelectWidget,
     onRemoveWidget,
-    selectedId,
     isSelected,
     isEditing,
     onEnterEditMode,
-    calculateSnap,
-    clearGuides,
     canvasWidth = 960,
     canvasHeight = 540,
   }) => {
-    // Usar el hook personalizado para manejar todas las interacciones
-    const {
-      isDragging,
-      size,
-      position,
-      handleDragStart,
-      handleDrag,
-      handleDragStop,
-      handleResizeStart,
-      handleResizeStop,
-      handleClick,
-    } = useWidgetInteractions({
-      widget,
-      onUpdateWidget,
-      onSelectWidget,
-      onRemoveWidget,
-      selectedId,
-      calculateSnap,
-      clearGuides,
-      canvasWidth,
-      canvasHeight,
-    });
-
-    // Memoizar las configuraciones para evitar recalculos
+    // Configuraciones memoizadas
     const resizeConfig = useMemo(() => getResizeConfig(widget), [widget]);
     const lockAspectRatio = useMemo(() => getLockAspectRatio(widget), [widget]);
 
-    // Manejar doble click para entrar en modo edición
-    const handleDoubleClick = (e) => {
-      e.stopPropagation();
-      onEnterEditMode(widget.id);
-    }; // Optimización de drag para evitar conflictos con snap
-    const lastDragTimeRef = useRef(0);
-
-    const optimizedHandleDrag = useCallback(
-      (e, data) => {
-        const now = Date.now();
-        const timeSinceLastDrag = now - lastDragTimeRef.current;
-
-        // Throttle simple a 60fps sin RAF para mantener precisión del snap
-        if (timeSinceLastDrag < 16) return;
-
-        lastDragTimeRef.current = now;
-        handleDrag(e, data);
-      },
-      [handleDrag]
+    // Size y position derivados directamente del widget
+    const size = useMemo(
+      () => ({
+        width: widget.width,
+        height: widget.height,
+      }),
+      [widget.width, widget.height]
     );
 
-    // Normalizar resizeConfig para los indicadores visuales
-    const resizeIndicators = useMemo(() => {
-      if (resizeConfig === true) {
-        return {
-          top: true,
-          right: true,
-          bottom: true,
-          left: true,
-          topLeft: true,
-          topRight: true,
-          bottomLeft: true,
-          bottomRight: true,
-        };
-      } else if (resizeConfig === false) {
-        return {
-          top: false,
-          right: false,
-          bottom: false,
-          left: false,
-          topLeft: false,
-          topRight: false,
-          bottomLeft: false,
-          bottomRight: false,
-        };
-      } else {
-        return resizeConfig;
-      }
-    }, [resizeConfig]);
+    const position = useMemo(
+      () => ({
+        x: widget.x,
+        y: widget.y,
+      }),
+      [widget.x, widget.y]
+    );
+
+    // Handlers optimizados para nuestro MyRnd - SOLO onDragStop actualiza
+    const handleDragStart = useCallback(() => {
+      onSelectWidget(widget.id);
+    }, [onSelectWidget, widget.id]);
+
+    const handleDrag = useCallback(() => {
+      // Solo para compatibilidad - no hacer nada
+    }, []);
+
+    const handleDragStop = useCallback(
+      (e, finalPosition) => {
+        // Validar que finalPosition existe para evitar errores
+        if (
+          !finalPosition ||
+          typeof finalPosition.x === "undefined" ||
+          typeof finalPosition.y === "undefined"
+        ) {
+          console.warn(
+            "handleDragStop called with invalid finalPosition:",
+            finalPosition
+          );
+          return;
+        }
+
+        // ÚNICA actualización al final del drag
+        onUpdateWidget(widget.id, {
+          x: finalPosition.x,
+          y: finalPosition.y,
+        });
+      },
+      [widget, onUpdateWidget]
+    );
+
+    const handleResizeStart = useCallback(() => {
+      // Preparar para resize
+    }, []);
+
+    const handleClick = useCallback(
+      (e) => {
+        e.stopPropagation();
+        onSelectWidget(widget.id);
+      },
+      [onSelectWidget, widget.id]
+    );
+
+    const handleDoubleClick = useCallback(
+      (e) => {
+        e.stopPropagation();
+        if (widget.type === "text") {
+          onEnterEditMode(widget.id);
+        }
+      },
+      [onEnterEditMode, widget.id, widget.type]
+    );
 
     return (
-      <Rnd
+      <MyRnd
         key={widget.id}
-        minWidth={widget.minWidth || null}
-        minHeight={widget.minHeight || null}
         size={size}
         position={position}
-        onDragStart={handleDragStart}
-        onDragStop={handleDragStop}
-        onResizeStart={handleResizeStart}
-        onResizeStop={handleResizeStop}
-        onMouseDown={handleClick}
-        onDoubleClick={handleDoubleClick}
+        minWidth={widget.minWidth || 50}
+        minHeight={widget.minHeight || 50}
+        bounds={widget.bounds}
+        // Props esenciales para funcionalidad
         enableResizing={isEditing ? false : resizeConfig}
+        resizeHandleConfig={resizeConfig}
         disableDragging={isEditing}
         lockAspectRatio={lockAspectRatio}
-        className={`interactive-widget ${isSelected ? "widget-selected" : ""} ${
-          isDragging ? "dragging" : ""
-        } ${isEditing ? "widget-editing" : ""}`}
-        data-type={widget.type}
-        dragHandleClassName="drag-handle"
-        resizeHandleClasses={{
-          left: "drag-handle-left",
-          right: "drag-handle-right",
-          top: "drag-handle-top",
-          bottom: "drag-handle-bottom",
+        rotation={widget.rotation || 0}
+        // Props de canvas y bounds
+        canvasWidth={canvasWidth}
+        canvasHeight={canvasHeight}
+        widgetData={widget}
+        onOutOfBounds={(widgetData) => {
+          console.log("onOutOfBounds called with:", widgetData);
+          onRemoveWidget(widgetData.id);
         }}
-        enableUserSelectHack={true}
-        onDrag={optimizedHandleDrag}
-        onResize={null}
-        dragGrid={[5, 5]}
-        resizeGrid={[1, 1]}
+        // Props de interacción
+        dragHandleClassName="drag-handle"
+        isSelected={isSelected}
+        className={`interactive-widget ${isEditing ? "editing" : ""}`}
+        // Callbacks optimizados
+        onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragStop={handleDragStop}
+        onResizeStart={handleResizeStart}
+        onResize={() => {
+          // NO actualizar durante resize, solo al final
+        }}
+        onResizeStop={(e, handle, data) => {
+          // ÚNICA actualización al final del resize
+          onUpdateWidget(widget.id, {
+            x: data.position.x,
+            y: data.position.y,
+            width: data.size.width,
+            height: data.size.height,
+          });
+        }}
+        onMouseDown={handleClick}
+        onDoubleClick={handleDoubleClick}
       >
         {/* Renderizar el widget limpio sin lógica de interacción */}
         <Widget
@@ -137,13 +144,7 @@ const InteractiveWidget = memo(
           isEditing={isEditing}
           onUpdateWidget={onUpdateWidget}
         />
-
-        {/* Indicadores visuales cuando está seleccionado y no está en modo edición */}
-        <ResizeIndicators
-          resizeIndicators={resizeIndicators}
-          isVisible={isSelected && !isDragging && !isEditing}
-        />
-      </Rnd>
+      </MyRnd>
     );
   }
 );

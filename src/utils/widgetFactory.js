@@ -4,11 +4,14 @@ import { v4 as uuidv4 } from "uuid";
 const SETTINGS_DEFAULTS = {
   minWidth: 50,
   minHeight: 50,
+  rotation: 0, // Rotación por defecto en grados
+  bounds: true, // Por defecto, los widgets están limitados al canvas
 };
 
 // Configuraciones por defecto para cada tipo de widget
 const WIDGET_DEFAULTS = {
   text: {
+    ...SETTINGS_DEFAULTS,
     content: "Texto de ejemplo\ncon saltos de línea",
     x: 100,
     y: 100,
@@ -17,13 +20,16 @@ const WIDGET_DEFAULTS = {
     fontSize: 16,
     fontFamily: "Arial",
     color: "#000000",
+    bounds: true, // Los textos están limitados al canvas
   },
   image: {
-    content: "🖼️ Imagen",
+    ...SETTINGS_DEFAULTS,
+    content: "https://picsum.photos/300/200?random=1",
     x: 150,
     y: 150,
     width: 300,
     height: 200,
+    bounds: false, // Las imágenes pueden salir del canvas y ser eliminadas
   },
   rectangle: {
     ...SETTINGS_DEFAULTS,
@@ -32,6 +38,7 @@ const WIDGET_DEFAULTS = {
     width: 150,
     height: 100,
     color: "#3B82F6",
+    bounds: true, // Los rectángulos están limitados al canvas
   },
   circle: {
     ...SETTINGS_DEFAULTS,
@@ -40,6 +47,7 @@ const WIDGET_DEFAULTS = {
     width: 120,
     height: 120,
     color: "#10B981",
+    bounds: false, // Los círculos pueden salir del canvas y ser eliminados
   },
   star: {
     ...SETTINGS_DEFAULTS,
@@ -48,6 +56,7 @@ const WIDGET_DEFAULTS = {
     width: 120,
     height: 120,
     color: "#EF4444",
+    bounds: true, // Las estrellas están limitadas al canvas
   },
 };
 

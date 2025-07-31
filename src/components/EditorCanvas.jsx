@@ -1,8 +1,6 @@
 // src/components/EditorCanvas.jsx
 import React, { memo, useCallback } from "react";
 import InteractiveWidget from "./InteractiveWidget";
-import SnapGuides from "./SnapGuides";
-import { useSnapGuides } from "../hooks/useSnapGuides";
 import { canvasStyles } from "../styles/editorCanvas.styles";
 
 const EditorCanvas = memo(
@@ -16,13 +14,6 @@ const EditorCanvas = memo(
     onEnterEditMode,
     onExitEditMode,
   }) => {
-    // Hook para manejo de guías de snap
-    const { activeGuides, calculateSnap, clearGuides } = useSnapGuides(
-      canvasStyles.width,
-      canvasStyles.height,
-      widgets.filter((w) => w.id !== selectedId) // Excluir el widget seleccionado
-    );
-
     // Función para manejar click en el canvas (deseleccionar y salir del modo edición)
     const handleCanvasClick = useCallback(
       (e) => {
@@ -30,10 +21,9 @@ const EditorCanvas = memo(
         if (e.target === e.currentTarget) {
           onSelectWidget(null);
           onExitEditMode(); // Salir del modo edición
-          clearGuides();
         }
       },
-      [onSelectWidget, onExitEditMode, clearGuides]
+      [onSelectWidget, onExitEditMode]
     );
 
     // Función para manejar selección de widgets (salir del modo edición al seleccionar otro)
@@ -65,20 +55,11 @@ const EditorCanvas = memo(
               isSelected={isSelected}
               isEditing={isEditing}
               onEnterEditMode={onEnterEditMode}
-              calculateSnap={calculateSnap}
-              clearGuides={clearGuides}
               canvasWidth={canvasStyles.width}
               canvasHeight={canvasStyles.height}
             />
           );
         })}
-
-        {/* Guías de snap */}
-        <SnapGuides
-          activeGuides={activeGuides}
-          canvasWidth={canvasStyles.width}
-          canvasHeight={canvasStyles.height}
-        />
       </div>
     );
   }

@@ -85,6 +85,62 @@ const Toolbar = ({
       </div>
 
       <div className="toolbar-section">
+        {selectedWidget && (
+          <div className="widget-config">
+            <h3 className="toolbar-title">Transformaciones</h3>
+            <label>
+              Rotación: {selectedWidget.rotation || 0}°
+              <input
+                type="range"
+                min="-180"
+                max="180"
+                step="1"
+                value={selectedWidget.rotation || 0}
+                onChange={(e) =>
+                  updateWidget(selectedId, {
+                    rotation: parseInt(e.target.value),
+                  })
+                }
+                className="rotation-slider"
+                title="Rotar widget"
+              />
+            </label>
+            <div className="rotation-buttons">
+              <button
+                className="toolbar-btn secondary small"
+                onClick={() =>
+                  updateWidget(selectedId, {
+                    rotation: ((selectedWidget.rotation || 0) - 15) % 360,
+                  })
+                }
+                title="Rotar -15°"
+              >
+                ↺ -15°
+              </button>
+              <button
+                className="toolbar-btn secondary small"
+                onClick={() => updateWidget(selectedId, { rotation: 0 })}
+                title="Resetear rotación"
+              >
+                ⟲ 0°
+              </button>
+              <button
+                className="toolbar-btn secondary small"
+                onClick={() =>
+                  updateWidget(selectedId, {
+                    rotation: ((selectedWidget.rotation || 0) + 15) % 360,
+                  })
+                }
+                title="Rotar +15°"
+              >
+                ↻ +15°
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="toolbar-section">
         {selectedWidget?.type === "text" && (
           <div className="widget-config grid">
             <label>

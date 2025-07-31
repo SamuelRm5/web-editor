@@ -31,20 +31,21 @@ export const calculateTextHeight = (
       document.body.appendChild(tempElement);
     }
 
-    // Configurar estilos para el cálculo actual
-    tempElement.style.width = `${width - 16}px`; // -16px por el padding
+    // Configurar estilos para el cálculo actual con MISMO padding que display
+    tempElement.style.width = `${width - 16}px`; // -16px por el padding (8px x 2)
     tempElement.style.fontSize = `${fontSize}px`;
     tempElement.style.fontFamily = fontFamily;
     tempElement.style.lineHeight = "1.4";
-    tempElement.style.padding = "8px";
+    tempElement.style.padding = "8px"; // MISMO padding que TextWidgetDisplay
+    tempElement.style.margin = "0";
     tempElement.style.fontWeight = bold ? "bold" : "normal";
     tempElement.style.fontStyle = italic ? "italic" : "normal";
     tempElement.textContent = content || "Texto vacío";
 
     const height = tempElement.scrollHeight;
 
-    // Altura mínima basada en fontSize
-    const minHeight = fontSize * 1.4 + 16; // lineHeight + padding
+    // Altura mínima basada en fontSize + padding exacto
+    const minHeight = fontSize * 1.4 + 16; // lineHeight + padding (8px x 2)
 
     return Math.max(height, minHeight);
   } catch (error) {

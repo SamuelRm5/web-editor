@@ -1,0 +1,172 @@
+/* src/components/myrnd/MyRnd.css */
+
+.myrnd {
+  box-sizing: border-box;
+  user-select: none;
+  position: absolute;
+  border: 2px solid transparent;
+  /* Eliminar transition para evitar efectos ghost */
+}
+
+/* Overlay para resize handles - optimizado */
+.myrnd-overlay {
+  pointer-events: none; /* El overlay no interfiere */
+  z-index: 1001; /* Por encima de widgets pero no excesivamente alto */
+  border: 1px solid #FF6010; /* Borde del widget seleccionado en el overlay */
+  box-sizing: border-box;
+}
+
+.myrnd-overlay .resize-handle-container {
+  pointer-events: auto; /* Solo los handles son clicables */
+}
+
+/* Resize handles - Cambridge style: Large clickable area + small visual */
+.resize-handle-container {
+  position: absolute !important;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  /* Large clickable area - like Cambridge */
+  width: 20px;
+  height: 20px;
+  /* Center the visual element inside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Invisible background for debugging */
+  /* background: rgba(255, 0, 0, 0.1); */
+}
+
+/* Visual element inside the container */
+.resize-handle-visual {
+  background: white;
+  border: 1px solid #FF6010;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+    z-index: 9999 !important;
+  position: relative !important;
+}
+
+.resize-handle-container:hover .resize-handle-visual {
+  background: #FF6010;
+}
+
+/* Show handles on hover */
+.myrnd.selected .resize-handle-container,
+.myrnd-overlay.selected .resize-handle-container {
+  opacity: 1;
+}
+
+/* Container sizes for different handle types */
+.resize-handle-container-top,
+.resize-handle-container-bottom {
+  width: 32px;
+  height: 16px;
+  cursor: ns-resize;
+}
+
+.resize-handle-container-left,
+.resize-handle-container-right {
+  width: 16px;
+  height: 32px;
+  cursor: ew-resize;
+}
+
+.resize-handle-container-topLeft,
+.resize-handle-container-topRight,
+.resize-handle-container-bottomLeft,
+.resize-handle-container-bottomRight {
+  width: 20px;
+  height: 20px;
+}
+
+/* Visual sizes inside containers */
+.resize-handle-visual-top,
+.resize-handle-visual-bottom {
+  width: 21px;
+  height: 8px;
+}
+
+.resize-handle-visual-left,
+.resize-handle-visual-right {
+  width: 8px;
+  height: 21px;
+}
+
+.resize-handle-visual-topLeft,
+.resize-handle-visual-topRight,
+.resize-handle-visual-bottomLeft,
+.resize-handle-visual-bottomRight {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Positions for container elements - Cambridge style */
+.resize-handle-container-top {
+  top: -8px; /* Half of container height */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.resize-handle-container-bottom {
+  bottom: -8px; /* Half of container height */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.resize-handle-container-left {
+  left: -8px; /* Half of container width */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.resize-handle-container-right {
+  right: -8px; /* Half of container width */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.resize-handle-container-topLeft {
+  top: -10px;
+  left: -10px;
+  cursor: nw-resize;
+}
+
+.resize-handle-container-topRight {
+  top: -10px;
+  right: -10px;
+  cursor: ne-resize;
+}
+
+.resize-handle-container-bottomLeft {
+  bottom: -10px;
+  left: -10px;
+  cursor: sw-resize;
+}
+
+.resize-handle-container-bottomRight {
+  bottom: -10px;
+  right: -10px;
+  cursor: se-resize;
+}
+
+.myrnd.selected {
+  /* El borde ahora lo maneja el overlay */
+  border-color: transparent;
+  border-style: solid;
+}
+
+/* Hardware acceleration y animaciones mejoradas */
+.myrnd {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.myrnd.dragging,
+.myrnd.resizing {
+  will-change: transform, left, top, width, height;
+}
+
+.myrnd.dragging {
+  cursor: move !important;
+}
