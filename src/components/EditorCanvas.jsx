@@ -11,7 +11,6 @@ const EditorCanvas = memo(
     onRemoveWidget,
     selectedId,
     editingWidgetId,
-    onEnterEditMode,
     onExitEditMode,
   }) => {
     // Función para manejar click en el canvas (deseleccionar y salir del modo edición)
@@ -54,7 +53,6 @@ const EditorCanvas = memo(
               onRemoveWidget={onRemoveWidget}
               isSelected={isSelected}
               isEditing={isEditing}
-              onEnterEditMode={onEnterEditMode}
               canvasWidth={canvasStyles.width}
               canvasHeight={canvasStyles.height}
             />

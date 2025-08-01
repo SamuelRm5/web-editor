@@ -78,22 +78,3 @@
     padding: 0;
 }
 
-/* Estilos para widgets de texto multilinea */
-.text-widget {
-    overflow: visible;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.text-widget-editing textarea {
-    font-family: inherit;
-    line-height: 1.4;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-}
-
-.text-widget-editing textarea::-webkit-scrollbar {
-    display: none; /* WebKit */
-}

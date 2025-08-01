@@ -15,7 +15,6 @@ function App() {
     removeWidget,
     clearAllWidgets,
     selectWidget,
-    enterEditMode,
     exitEditMode,
   } = useWidgetManager();
 
@@ -42,7 +41,6 @@ function App() {
         onRemoveWidget={removeWidget}
         selectedId={selectedId}
         editingWidgetId={editingWidgetId}
-        onEnterEditMode={enterEditMode}
         onExitEditMode={exitEditMode}
       />
     </div>

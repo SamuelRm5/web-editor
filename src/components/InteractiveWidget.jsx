@@ -12,7 +12,6 @@ const InteractiveWidget = memo(
     onRemoveWidget,
     isSelected,
     isEditing,
-    onEnterEditMode,
     canvasWidth = 960,
     canvasHeight = 540,
   }) => {
@@ -82,15 +81,10 @@ const InteractiveWidget = memo(
       [onSelectWidget, widget.id]
     );
 
-    const handleDoubleClick = useCallback(
-      (e) => {
-        e.stopPropagation();
-        if (widget.type === "text") {
-          onEnterEditMode(widget.id);
-        }
-      },
-      [onEnterEditMode, widget.id, widget.type]
-    );
+    const handleDoubleClick = useCallback((e) => {
+      e.stopPropagation();
+      // Double click functionality removed for text widgets
+    }, []);
 
     return (
       <MyRnd

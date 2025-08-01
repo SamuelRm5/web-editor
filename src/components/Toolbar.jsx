@@ -64,14 +64,6 @@ const Toolbar = ({
         <div className="toolbar-group">
           <button
             className="toolbar-btn primary"
-            onClick={() => addWidget("text")}
-            title="Agregar texto"
-          >
-            <span className="btn-icon">T</span>
-            <span className="btn-label">Texto</span>
-          </button>
-          <button
-            className="toolbar-btn primary"
             onClick={() => addWidget("image")}
             title="Agregar imagen"
           >
@@ -219,119 +211,7 @@ const Toolbar = ({
         )}
       </div>
 
-      <div className="toolbar-section">
-        {selectedWidget?.type === "text" && (
-          <div className="widget-config grid">
-            <label>
-              Fuente:
-              <select
-                value={selectedWidget.fontFamily}
-                onChange={(e) =>
-                  updateWidget(selectedId, { fontFamily: e.target.value })
-                }
-              >
-                <option value="Arial">Arial</option>
-                <option value="sans-serif">Sans Serif</option>
-                <option value="serif">Serif</option>
-                <option value="monospace">Monospace</option>
-              </select>
-            </label>
-            <label>
-              Tamaño:
-              <input
-                type="number"
-                className="border border-neutral-400 rounded px-2 py-1"
-                value={selectedWidget.fontSize}
-                onChange={(e) =>
-                  updateWidget(selectedId, {
-                    fontSize: parseInt(e.target.value) || 16,
-                  })
-                }
-              />
-            </label>
-            <label>
-              Color:
-              <input
-                type="color"
-                value={selectedWidget.color}
-                onChange={(e) =>
-                  updateWidget(selectedId, { color: e.target.value })
-                }
-              />
-            </label>
-
-            {/* Controles de formato */}
-            <div className="format-controls">
-              <label className="format-label">Formato:</label>
-              <div className="format-buttons">
-                <button
-                  className={`format-btn ${
-                    selectedWidget.bold ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    updateWidget(selectedId, { bold: !selectedWidget.bold })
-                  }
-                  title="Negrita"
-                >
-                  <strong>B</strong>
-                </button>
-                <button
-                  className={`format-btn ${
-                    selectedWidget.italic ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    updateWidget(selectedId, { italic: !selectedWidget.italic })
-                  }
-                  title="Cursiva"
-                >
-                  <em>I</em>
-                </button>
-                <button
-                  className={`format-btn ${
-                    selectedWidget.underlined ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    updateWidget(selectedId, {
-                      underlined: !selectedWidget.underlined,
-                    })
-                  }
-                  title="Subrayado"
-                >
-                  <u>U</u>
-                </button>
-                <button
-                  className={`format-btn ${
-                    selectedWidget.strikethrough ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    updateWidget(selectedId, {
-                      strikethrough: !selectedWidget.strikethrough,
-                    })
-                  }
-                  title="Tachado"
-                >
-                  <s>S</s>
-                </button>
-              </div>
-            </div>
-
-            {/* Control de alineación */}
-            <label>
-              Alineación:
-              <select
-                value={selectedWidget.align || "left"}
-                onChange={(e) =>
-                  updateWidget(selectedId, { align: e.target.value })
-                }
-              >
-                <option value="left">Izquierda</option>
-                <option value="center">Centro</option>
-                <option value="right">Derecha</option>
-              </select>
-            </label>
-          </div>
-        )}
-      </div>
+      <div className="toolbar-section"></div>
     </div>
   );
 };

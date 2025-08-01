@@ -1,21 +1,12 @@
 // src/components/widgets/WidgetRenderer.jsx
 import React from "react";
-import TextWidget from "./TextWidget";
 import ImageWidget from "./ImageWidget";
 import RectangleWidget from "./RectangleWidget";
 import CircleWidget from "./CircleWidget";
 import StarWidget from "./StarWidget";
 
-const WidgetRenderer = ({ widget, isEditing, onUpdateWidget }) => {
+const WidgetRenderer = ({ widget }) => {
   switch (widget.type) {
-    case "text":
-      return (
-        <TextWidget
-          widget={widget}
-          isEditing={isEditing}
-          onUpdateWidget={onUpdateWidget}
-        />
-      );
     case "image":
       return <ImageWidget widget={widget} />;
     case "rectangle":

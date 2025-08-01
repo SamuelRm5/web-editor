@@ -10,18 +10,6 @@ const SETTINGS_DEFAULTS = {
 
 // Configuraciones por defecto para cada tipo de widget
 const WIDGET_DEFAULTS = {
-  text: {
-    ...SETTINGS_DEFAULTS,
-    content: "Texto de ejemplo\ncon saltos de línea",
-    x: 100,
-    y: 100,
-    width: 200,
-    height: 60, // Altura mínima más pequeña para permitir crecimiento automático
-    fontSize: 16,
-    fontFamily: "Arial",
-    color: "#000000",
-    bounds: true, // Los textos están limitados al canvas
-  },
   image: {
     ...SETTINGS_DEFAULTS,
     src: "https://picsum.photos/300/200?random=1", // Usar src en lugar de content
