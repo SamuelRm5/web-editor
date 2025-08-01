@@ -28,6 +28,16 @@ Un editor visual interactivo desarrollado en React que permite crear, editar y o
 - **Sistema de Estado** - Gestión eficiente del estado de widgets
 - **MyRnd Library** - Sistema propio de drag & resize optimizado
 
+## 📚 Documentación
+
+La documentación técnica completa está organizada en el directorio [`/docs`](./docs/):
+
+- **[Sistema de Resize](./docs/features/widget-resize-system.md)** - Configuración centralizada de widgets
+- **[MyRnd Sistema Completo](./docs/myrnd/MYRND_COMPLETE_GUIDE.md)** - Biblioteca de drag & resize
+- **[Contexto IA](./docs/ai-context/)** - Configuraciones para asistentes de IA
+
+Ver el **[índice completo de documentación](./docs/README.md)** para más detalles.
+
 ## 📁 Estructura del Proyecto
 
 ```

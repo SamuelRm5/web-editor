@@ -8,6 +8,9 @@ import { useDragLogic, useResizeLogic, useBoundsLogic } from "./hooks";
 // Componentes separados
 import { ResizeHandles } from "./components";
 
+// Importar el nuevo sistema de configuración
+import { getWidgetResizeConfig } from "../../utils/widgetResizeConfig.js";
+
 const MyRnd = ({
   children,
   size,
@@ -42,6 +45,19 @@ const MyRnd = ({
   const [currentSize, setCurrentSize] = useState(size);
   const [currentPosition, setCurrentPosition] = useState(position);
 
+  // Obtener configuración centralizada del widget
+  const resizeConfig = useMemo(() => {
+    if (!widgetData?.type) return null;
+    return getWidgetResizeConfig(widgetData.type);
+  }, [widgetData?.type]);
+
+  // Aplicar configuraciones dinámicas basadas en el tipo de widget
+  const dynamicMinWidth = resizeConfig?.constraints?.minWidth || minWidth;
+  const dynamicMinHeight = resizeConfig?.constraints?.minHeight || minHeight;
+  const dynamicMaxWidth = resizeConfig?.constraints?.maxWidth || maxWidth;
+  const dynamicMaxHeight = resizeConfig?.constraints?.maxHeight || maxHeight;
+  const dynamicLockAspectRatio = resizeConfig?.aspectRatio || lockAspectRatio;
+
   // Actualizar estado interno cuando cambian las props SOLO si no estamos interactuando
   useEffect(() => {
     setCurrentSize(size);
@@ -54,8 +70,8 @@ const MyRnd = ({
   // Hooks de lógica separada
   const { applyBounds, checkOutOfBounds } = useBoundsLogic({
     bounds,
-    maxWidth,
-    maxHeight,
+    maxWidth: dynamicMaxWidth,
+    maxHeight: dynamicMaxHeight,
     canvasWidth,
     canvasHeight,
     onOutOfBounds,
@@ -89,13 +105,16 @@ const MyRnd = ({
     enableResizing,
     currentSize,
     currentPosition,
-    minWidth,
-    minHeight,
-    lockAspectRatio,
+    minWidth: dynamicMinWidth,
+    minHeight: dynamicMinHeight,
+    lockAspectRatio: dynamicLockAspectRatio,
     applyBounds,
     onResizeStart,
     onResize,
     onResizeStop,
+    // Pasar configuración avanzada al hook
+    widgetData,
+    aspectRatioConfig: resizeConfig?.aspectRatio,
   });
 
   // Event listeners globales optimizados
@@ -236,6 +255,7 @@ const MyRnd = ({
             enableResizing={enableResizing}
             onMouseDown={handleMouseDownResize}
             isDragging={isDragging}
+            handleConfig={resizeConfig?.handles} // Pasar configuración dinámica
           />
         </div>
       )}

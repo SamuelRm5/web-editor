@@ -1,7 +1,7 @@
 // src/components/InteractiveWidget.jsx
 import React, { memo, useMemo, useCallback } from "react";
 import { MyRnd } from "./myrnd";
-import { getResizeConfig, getLockAspectRatio } from "../utils/widgetUtils";
+import { getWidgetConstraints } from "../utils/widgetUtils";
 import Widget from "./Widget";
 
 const InteractiveWidget = memo(
@@ -15,9 +15,8 @@ const InteractiveWidget = memo(
     canvasWidth = 960,
     canvasHeight = 540,
   }) => {
-    // Configuraciones memoizadas
-    const resizeConfig = useMemo(() => getResizeConfig(widget), [widget]);
-    const lockAspectRatio = useMemo(() => getLockAspectRatio(widget), [widget]);
+    // Configuraciones dinámicas basadas en el nuevo sistema
+    const constraints = useMemo(() => getWidgetConstraints(widget), [widget]);
 
     // Size y position derivados directamente del widget
     const size = useMemo(
@@ -91,19 +90,19 @@ const InteractiveWidget = memo(
         key={widget.id}
         size={size}
         position={position}
-        minWidth={widget.minWidth || 50}
-        minHeight={widget.minHeight || 50}
+        minWidth={constraints.minWidth || widget.minWidth || 50}
+        minHeight={constraints.minHeight || widget.minHeight || 50}
+        maxWidth={constraints.maxWidth}
+        maxHeight={constraints.maxHeight}
         bounds={widget.bounds}
-        // Props esenciales para funcionalidad
-        enableResizing={isEditing ? false : resizeConfig}
-        resizeHandleConfig={resizeConfig}
+        // El resize será manejado automáticamente por el nuevo sistema
+        enableResizing={!isEditing}
         disableDragging={isEditing}
-        lockAspectRatio={lockAspectRatio}
         rotation={widget.rotation || 0}
         // Props de canvas y bounds
         canvasWidth={canvasWidth}
         canvasHeight={canvasHeight}
-        widgetData={widget}
+        widgetData={widget} // Pasar datos completos del widget
         onOutOfBounds={(widgetData) => {
           console.log("onOutOfBounds called with:", widgetData);
           onRemoveWidget(widgetData.id);
